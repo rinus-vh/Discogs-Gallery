@@ -6,9 +6,7 @@ import { useAppContext } from '../context/AppContext'
 
 import styles from './RecordDetails.module.css'
 
-/**
- * @param {{ record: VinylRecord }} props
- */
+/** @param {{ record: VinylRecord }} props */
 export function RecordDetails({ record }) {
   const { records, setRecords } = useAppContext()
   const [isEditingGenre, setIsEditingGenre] = useState(false)
@@ -16,9 +14,7 @@ export function RecordDetails({ record }) {
   const primaryGenre = record['Primary Genre'] || (record.Genres?.length ? record.Genres[0] : '')
   const uniqueLabels = record.Label ? Array.from(new Set(record.Label)) : []
 
-  /**
-   * @param {string} newPrimaryGenre
-   */
+  /** @param {string} newPrimaryGenre */
   function handlePrimaryGenreChange(newPrimaryGenre) {
     setIsEditingGenre(false)
 
@@ -67,9 +63,7 @@ export function RecordDetails({ record }) {
   )
 }
 
-/**
- * @param {{ title: string, artist: string, releaseId: string }} props
- */
+/** @param {{ title: string, artist: string, releaseId: string }} props */
 function RecordHeader({ title, artist, releaseId }) {
   return (
     <div>
@@ -153,9 +147,7 @@ function GenreSelector({ record, primaryGenre, isEditing, setIsEditing, onChange
   )
 }
 
-/**
- * @param {{ genres: string[] }} props
- */
+/** @param {{ genres: string[] }} props */
 function GenrePills({ genres }) {
   if (!genres?.length) return null
 
@@ -179,9 +171,7 @@ function GenrePills({ genres }) {
   )
 }
 
-/**
- * @param {{ labels: string[] }} props
- */
+/** @param {{ labels: string[] }} props */
 function LabelList({ labels }) {
   return (
     <div className={styles.block}>
