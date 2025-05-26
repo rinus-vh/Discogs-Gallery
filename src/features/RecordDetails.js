@@ -1,7 +1,7 @@
 /** @typedef {import('types').VinylRecord} VinylRecord */
 
 import { useState } from 'react'
-import { Music, Disc, Tag, Calendar, Pencil } from 'lucide-react'
+import { Music, Disc, Tag, Calendar, Pencil, ExternalLink } from 'lucide-react'
 import { useAppContext } from '../context/AppContext'
 
 import styles from './RecordDetails.module.css'
@@ -47,7 +47,7 @@ export function RecordDetails({ record }) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.content}>
-        <RecordHeader title={record.Title} artist={record.Artist} />
+        <RecordHeader title={record.Title} artist={record.Artist} releaseId={record.release_id} />
 
         <div className={styles.grid}>
           <InfoBlock icon={Calendar} label="Year" value={record.Released || '-'} />
@@ -68,12 +68,22 @@ export function RecordDetails({ record }) {
 }
 
 /**
- * @param {{ title: string, artist: string }} props
+ * @param {{ title: string, artist: string, releaseId: string }} props
  */
-function RecordHeader({ title, artist }) {
+function RecordHeader({ title, artist, releaseId }) {
   return (
     <div>
-      <h2 className={styles.title}>{title}</h2>
+      <div className={styles.titleRow}>
+        <h2 className={styles.title}>{title}</h2>
+        <a
+          href={`https://www.discogs.com/release/${releaseId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.discogsLink}
+        >
+          <ExternalLink size={16} />
+        </a>
+      </div>
       <div className={styles.artistRow}>
         <Music size={16} className={styles.icon} />
         <span className={styles.artistName}>{artist}</span>

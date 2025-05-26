@@ -18,9 +18,27 @@
   gap: 1rem;
 }
 
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .title {
   font-size: 1.25rem;
   font-weight: 700;
+  color: var(--color-white);
+}
+
+.discogsLink {
+  color: var(--color-gray-400);
+  transition: color 0.2s ease;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.discogsLink:hover {
   color: var(--color-white);
 }
 
