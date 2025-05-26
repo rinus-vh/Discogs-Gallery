@@ -1,0 +1,90 @@
+.chartContainer {
+  position: relative;
+  display: grid;
+  height: 6rem;
+  padding: 0.5rem 0;
+
+  & > * {
+    grid-area: 1 / -1;
+  }
+}
+
+.componentBarChart {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  align-items: end;
+  gap: var(--size-2);
+  padding: 0.25rem 0;
+
+  & > .bar {
+    grid-area: 1 / -1;
+  }
+}
+
+.bar {
+  width: 100%;
+  background-color: var(--color-orange-500);
+}
+
+.componentSelectedRangeHighlight {
+  width: 100%;
+  height: 100%;
+}
+
+.highlight {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 0.5rem;
+  border: 0.25rem solid white;
+}
+
+.componentRangeInputs {
+  position: relative;
+  height: 100%;
+}
+
+.rangeSliderMin,
+.rangeSliderMax {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  pointer-events: auto;
+  appearance: none;
+  pointer-events: none;
+}
+
+.rangeSliderMin::-webkit-slider-thumb,
+.rangeSliderMax::-webkit-slider-thumb {
+  pointer-events: auto;
+  -webkit-appearance: none;
+  height: calc(100% - var(--size-4));
+  width: var(--size-12);
+  margin-top: calc(var(--size-4) / 2);
+  background-color: transparent;
+  cursor: col-resize;
+  border: none;
+}
+
+.rangeSliderMin::-moz-range-thumb,
+.rangeSliderMax::-moz-range-thumb {
+  pointer-events: auto;
+  appearance: none;
+  height: calc(100% - var(--size-4));
+  width: var(--size-12);
+  margin-top: calc(var(--size-4) / 2);
+  background-color: transparent;
+  cursor: col-resize;
+  border: none;
+}
+
+.labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: var(--color-gray-400);
+  margin-top: 0.5rem;
+  user-select: none;
+}

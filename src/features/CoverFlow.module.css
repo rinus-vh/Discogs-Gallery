@@ -1,0 +1,147 @@
+.container {
+  flex: 1;
+  position: relative;
+  background-color: var(--color-black);
+  border-bottom: 1px solid var(--color-gray-800);
+}
+
+.backgroundOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: background 1s ease-in-out;
+}
+
+.coverContainer {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;   
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  user-select: none;
+}
+
+.componentCover {
+  cursor: pointer;
+  pointer-events: none;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  height: 16rem;
+  width: 16rem;
+  transition:
+    all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1),
+    opacity 0.4s ease-in-out;
+
+  &.isVisible {
+    pointer-events: auto;
+    opacity: 1;
+  }
+}
+
+.coverInner {
+  --opacity-overlay: 1;
+  
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-black);
+    border-radius: 0.5rem;
+    pointer-events: none;
+    transition: opacity 0.33s cubic-bezier(0.4, 0.0, 0.2, 1);
+    opacity: var(--opacity-overlay);
+  }
+}
+
+.componentCoverImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.5);
+}
+
+.componentReflectionWrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 100%;
+  border-radius: 0.5rem;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.95));
+    pointer-events: none;
+  }
+}
+
+.reflectionImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleY(-1);
+  opacity: 1;
+}
+
+.componentNavigationButtons {
+    z-index: 2;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+}
+
+.navButton {
+  pointer-events: auto;
+  padding: 0.5rem;
+  background-color: var(--color-black--50);
+  border-radius: 0.5rem;
+  color: var(--color-white);
+  outline: none;
+
+  &:hover {
+    background-color: var(--color-black--70);
+  }
+
+  &[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.counter {
+  position: absolute;
+  bottom: 1rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.counterLabel {
+  background-color: var(--color-black--70);
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  color: var(--color-white);
+  font-size: 0.75rem;
+}

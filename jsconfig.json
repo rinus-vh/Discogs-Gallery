@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "baseUrl": "src",
+    "paths": {
+      "/*": [
+        "*"
+      ],
+      "types": [
+        "types/types.d.ts"
+      ]
+    }
+  },
+  "include": [
+    "src"
+  ]
+}

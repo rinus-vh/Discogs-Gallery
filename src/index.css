@@ -1,0 +1,111 @@
+/* Base styles */
+body {
+  color: var(--color-white);
+  background-color: var(--color-black);
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+}
+
+/* Scrollbar styles (Webkit) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--color-gray-900);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray-700);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-gray-600);
+}
+
+/* Scrollbar styles (Firefox) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-600) var(--color-gray-800); /* thumb color track color */
+}
+
+/* Range Slider Styles */
+.range-slider {
+  position: absolute;
+  width: 100%;
+  appearance: none;
+  background-color: transparent;
+  height: 48px;
+  pointer-events: none;
+}
+
+.range-slider::-webkit-slider-thumb {
+  appearance: none;
+  background-color: var(--color-white);
+  border: 2px solid var(--color-gray-800);
+  height: 48px;
+  width: 16px;
+  border-radius: 4px;
+  cursor: ew-resize;
+  pointer-events: auto;
+  position: relative;
+}
+
+.range-slider::-webkit-slider-thumb::before,
+.range-slider::-webkit-slider-thumb::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 12px;
+  background-color: var(--color-gray-800);
+  border-radius: 2px;
+  left: 4px;
+}
+
+.range-slider::-webkit-slider-thumb::before {
+  top: 6px;
+}
+
+.range-slider::-webkit-slider-thumb::after {
+  bottom: 6px;
+}
+
+.range-slider::-moz-range-thumb {
+  background-color: var(--color-white);
+  border: 2px solid var(--color-gray-800);
+  height: 48px;
+  width: 16px;
+  border-radius: 4px;
+  cursor: ew-resize;
+  pointer-events: auto;
+  position: relative;
+}
+
+.range-slider::-moz-range-thumb::before,
+.range-slider::-moz-range-thumb::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 12px;
+  background-color: var(--color-gray-800);
+  border-radius: 2px;
+  left: 4px;
+}
+
+.range-slider::-moz-range-thumb::before {
+  top: 6px;
+}
+
+.range-slider::-moz-range-thumb::after {
+  bottom: 6px;
+}
+
+.range-slider-min {
+  z-index: 20;
+}
+
+.range-slider-max {
+  z-index: 10;
+}

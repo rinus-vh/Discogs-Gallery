@@ -1,0 +1,154 @@
+.componentOverlay {
+  opacity: 0;
+  pointer-events: none;
+  z-index: 50;
+  position: fixed;
+  inset: 0;
+  background-color: var(--color-black--50);
+  backdrop-filter: blur(4px);
+  transition: opacity 0.3s ease;
+
+  &.isOpen {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.componentDrawerPanel {
+  z-index: 50;
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 20rem;
+  padding-bottom: 125px;
+  background-color: var(--color-black);
+  border-left: 1px solid var(--color-white--10);
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(100%);
+  overflow-y: auto;
+
+  &.isOpen {
+    transform: translateX(0);
+  }
+}
+
+.componentDrawerHeader {
+  z-index: 2;
+  position: sticky;
+  top: 0;
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-white--10);
+  background-color: var(--color-black--70);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.closeButton {
+  color: var(--color-gray-400);
+  transition: color 0.2s ease-in-out;
+}
+
+.closeButton:hover {
+  color: var(--color-white);
+}
+
+.componentDrawerContent {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  padding: 1rem;
+}
+
+.componentFilterGroupTitle {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--color-white);
+}
+
+.filterGroupContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.genreList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow-y: auto;
+}
+
+.componentCheckbox {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--size-12);
+  padding: var(--size-8) var(--size-16);
+  color: var(--color-white);
+  border: 1px solid var(--color-white);
+  border-radius: 0.5rem;
+  transition: 0.25s ease;
+  transition-property: background-color, color;
+
+  &.isChecked {
+    color: var(--color-black);
+    background-color: var(--color-white);
+  }
+
+  & > .checkboxInput {
+    position: static;
+    width: var(--size-24);
+    height: var(--size-24);
+  }
+}
+
+.checkboxLabel {
+  user-select: none;
+}
+
+.checkboxInput {
+  position: relative;
+  background-color: var(--color-black);
+  border: 2px solid var(--color-white--10);
+  border-radius: 0.5rem;
+  transition: 0.25s ease;
+  transition-property: background-color, border-color;
+  cursor: pointer;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  &::after {
+    content: '';
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    mask-image: url('../images/icons/check.svg');
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: 75%;
+    background-color: var(--color-white);
+  }
+
+  &.isChecked {
+    border-color: var(--color-white);
+
+    &::after {
+      opacity: 1;
+    }
+  }
+}

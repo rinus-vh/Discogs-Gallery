@@ -1,0 +1,109 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.panel {
+  width: 100%;
+  max-width: 36rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.headerIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.musicIcon {
+  color: var(--color-orange-500);
+}
+
+.headerTitle {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.headerSubtitle {
+  color: var(--color-gray-400);
+  max-width: 28rem;
+  margin: 0 auto 2rem;
+}
+
+.dropzone {
+  border: 2px dashed;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.dropzoneIdle {
+  border-color: var(--color-gray-600);
+}
+
+.dropzoneIdle:hover {
+  border-color: var(--color-white);
+}
+
+.dropzoneActive {
+  border-color: var(--color-orange-500);
+  background-color: var(--color-orange-500--10);
+}
+
+.uploadIcon {
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 1rem;
+  color: var(--color-gray-400);
+}
+
+.dropTitle {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--color-white);
+  margin-bottom: 0.5rem;
+}
+
+.dropSubtext {
+  color: var(--color-gray-400);
+}
+
+.spinner {
+  width: 3rem;
+  height: 3rem;
+  color: var(--color-orange-500);
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+.loadingTitle {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--color-white);
+  margin-bottom: 0.5rem;
+}
+
+.loadingText {
+  color: var(--color-gray-400);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

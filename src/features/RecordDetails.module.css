@@ -1,0 +1,110 @@
+.wrapper {
+  padding: 1rem;
+  background-color: var(--color-black--70);
+  backdrop-filter: blur(8px);
+  overflow-y: auto;
+  max-height: 40%;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-white);
+}
+
+.artistRow {
+  display: flex;
+  align-items: center;
+  color: var(--color-gray-400);
+}
+
+.artistName {
+  font-size: 1.125rem;
+}
+
+.icon {
+  margin-right: 0.25rem;
+  color: var(--color-gray-400);
+}
+
+.iconWhite {
+  color: var(--color-white);
+}
+
+.block {
+  background-color: var(--color-black);
+  border: 1px solid var(--color-white--10);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.blockLabel {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+  color: var(--color-gray-400);
+}
+
+.blockLabelText {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.blockValue {
+  color: var(--color-white);
+}
+
+.genreSelector {
+  position: relative;
+}
+
+.genreSelect {
+  width: 100%;
+  background-color: var(--color-black);
+  border: 1px solid var(--color-gray-700);
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  color: var(--color-white);
+}
+
+.editButton {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  padding: 0.375rem;
+  border-radius: 9999px;
+  background-color: var(--color-black);
+}
+
+.genreSelector:hover .editButton {
+  opacity: 1;
+}
+
+.pillWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pill {
+  padding: 0.25rem 0.5rem;
+  background-color: var(--color-orange-500--20);
+  color: var(--color-orange-500);
+  font-size: 0.75rem;
+  border-radius: 9999px;
+}
