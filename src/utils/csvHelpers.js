@@ -29,10 +29,10 @@ export async function parseCsv(file) {
           const releaseId = record.release_id || record['Release ID'] || index
           const id = generateId(releaseId, index)
 
-          const normalizeArray = (val) => {
+          const normalizeArray = (val, separator = ';') => {
             if (!val) return []
             if (Array.isArray(val)) return val
-            return val.toString().split(/[,;]/).map(s => s.trim()).filter(Boolean)
+            return val.toString().split(separator).map(s => s.trim()).filter(Boolean)
           }
 
           return {
@@ -73,9 +73,9 @@ export async function generateCsv(records) {
   return new Promise((resolve, reject) => {
     const processedRecords = records.map(r => {
       const clone = { ...r }
-      if (Array.isArray(clone.Label)) clone.Label = clone.Label.join(', ')
-      if (Array.isArray(clone.Format)) clone.Format = clone.Format.join(', ')
-      if (Array.isArray(clone.Genres)) clone.Genres = clone.Genres.join(', ')
+      if (Array.isArray(clone.Label)) clone.Label = clone.Label.join('; ')
+      if (Array.isArray(clone.Format)) clone.Format = clone.Format.join('; ')
+      if (Array.isArray(clone.Genres)) clone.Genres = clone.Genres.join('; ')
       return clone
     })
 
@@ -87,7 +87,7 @@ export async function generateCsv(records) {
       header: true,
       columns,
       cast: {
-        object: (val) => Array.isArray(val) ? val.join(', ') : val
+        object: (val) => Array.isArray(val) ? val.join('; ') : val
       }
     }, (err, output) => {
       if (err) return reject(err)
