@@ -102,6 +102,19 @@
   color: var(--color-gray-400);
 }
 
+.errorModalContent {
+  color: var(--color-gray-300);
+}
+
+.errorModalMessage {
+  margin-bottom: 1.5rem;
+}
+
+.errorModalActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);

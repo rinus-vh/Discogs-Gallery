@@ -4,7 +4,8 @@ import { FileUp, Music, Loader, ArrowRightCircle } from 'lucide-react'
 
 import { parseCsv } from '../utils/csvHelpers'
 import { useAppContext } from '../context/AppContext'
-import { ButtonOrange } from '../features/Button'
+import { ButtonOrange, ButtonGray } from '../features/Button'
+import { Modal } from '../features/Modal'
 
 import styles from './Home.module.css'
 
@@ -12,17 +13,11 @@ export function Home() {
   const { setPage, setRecords, setDiscogsFile, setHasViewedCollection } = useAppContext()
   const [isLoading, setIsLoading] = useState(false)
   const [loadingMessage, setLoadingMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
-  const handleFileProcess = async (file, processAsNew = false) => {
+  const handleFileProcess = async (file) => {
     try {
       setIsLoading(true)
-
-      if (processAsNew) {
-        setDiscogsFile(file)
-        setPage('input')
-        return
-      }
-
       setLoadingMessage('Loading collection...')
       const records = await parseCsv(file)
 
@@ -30,10 +25,10 @@ export function Home() {
       await Promise.allSettled(
         records.map(record =>
           new Promise(resolve => {
-            if (!record.imageUrl) return resolve()
+            if (!record['Image url']) return resolve()
             const img = new Image()
             img.onload = img.onerror = resolve
-            img.src = record.imageUrl
+            img.src = record['Image url']
           })
         )
       )
@@ -43,7 +38,7 @@ export function Home() {
       setPage('edit')
     } catch (err) {
       console.error('Error parsing CSV:', err)
-      alert("Error parsing the CSV file. Please ensure it's a valid CSV.")
+      setErrorMessage("Error parsing the CSV file. Please ensure it's a valid CSV.")
     } finally {
       setIsLoading(false)
       setLoadingMessage('')
@@ -74,6 +69,12 @@ export function Home() {
         />
         <DropzoneArea dropzone={dropzone} />
       </div>
+
+      <ErrorModal
+        isOpen={!!errorMessage}
+        message={errorMessage}
+        onClose={() => setErrorMessage('')}
+      />
     </div>
   )
 }
@@ -116,5 +117,18 @@ function LoadingState({ message }) {
       <h2 className={styles.loadingTitle}>{message}</h2>
       <p className={styles.loadingText}>Please wait while we load your collection</p>
     </div>
+  )
+}
+
+function ErrorModal({ isOpen, message, onClose }) {
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title="Error">
+      <div className={styles.errorModalContent}>
+        <p className={styles.errorModalMessage}>{message}</p>
+        <div className={styles.errorModalActions}>
+          <ButtonGray onClick={onClose} label="Close" />
+        </div>
+      </div>
+    </Modal>
   )
 }
