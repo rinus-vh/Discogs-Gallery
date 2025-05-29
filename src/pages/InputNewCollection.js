@@ -1,5 +1,4 @@
 /** @typedef {import('../types').VinylRecord} VinylRecord */
-/** @typedef {import('../types').LogEntry} LogEntry */
 
 import { useState, useRef } from 'react'
 import { useDropzone } from 'react-dropzone'
@@ -12,6 +11,7 @@ import { useAppContext } from '../context/AppContext'
 import { ProgressBar } from '../features/ProgressBar'
 import { LogViewer } from '../features/LogViewer'
 import { ButtonGray, ButtonOrange } from '../features/Button'
+import { Tooltip } from '../features/Tooltip'
 
 import styles from './InputNewCollection.module.css'
 
@@ -37,7 +37,8 @@ export function InputNewCollection() {
   const [tokenError, setTokenError] = useState('')
   /** @type {[string, (error: string) => void]} */
   const [fileError, setFileError] = useState('')
-  const [stopProcessing, setStopProcessing] = useState(false)
+  const [previousFile, setPreviousFile] = useState(null)
+  const [stopRequested, setStopRequested] = useState(false)
   const formRef = useRef(null)
 
   const discogsDropzone = useDropzone({
@@ -52,9 +53,21 @@ export function InputNewCollection() {
     }
   })
 
+  const previousDropzone = useDropzone({
+    accept: { 'text/csv': ['.csv'] },
+    maxFiles: 1,
+    disabled: isProcessing,
+    onDrop: (acceptedFiles) => {
+      if (acceptedFiles.length > 0) {
+        setPreviousFile(acceptedFiles[0])
+      }
+    }
+  })
+
   function resetForm() {
     formRef.current?.reset()
     setDiscogsFile(null)
+    setPreviousFile(null)
     setDiscogsToken('')
     setProgress(0)
     clearLogs()
@@ -79,65 +92,51 @@ export function InputNewCollection() {
 
     try {
       setIsProcessing(true)
-      setStopProcessing(false)
+      setStopRequested(false)
       clearLogs()
       setProgress(0)
 
-      /** @type {LogEntry} */
-      const startLog = { message: `📊 Parsing ${discogsFile?.name}...`, type: 'info' }
-      addLog(startLog)
-
-      /** @type {VinylRecord[]} */
+      addLog({ message: `📊 Parsing ${discogsFile?.name}...`, type: 'info' })
       const discogsData = await parseCsv(discogsFile)
 
-      /** @type {LogEntry} */
-      const processingLog = { message: '🚀 Processing records...', type: 'info' }
-      addLog(processingLog)
+      let previousData = []
+      if (previousFile) {
+        addLog({ message: `📊 Parsing previous data from ${previousFile?.name}...`, type: 'info' })
+        previousData = await parseCsv(previousFile)
+      }
+
+      addLog({ message: '🚀 Processing records...', type: 'info' })
 
       /** @type {VinylRecord[]} */
       const processedRecords = await processRecords(
         discogsData,
+        previousData,
         discogsToken,
-        (p) => {
-          if (stopProcessing) throw new Error('STOP_PROCESSING')
-          setProgress(p)
-        },
-        (msg) => addLog({ message: msg, type: 'info' })
+        (p) => setProgress(p),
+        (msg) => addLog({ message: msg, type: 'info' }),
+        () => stopRequested
       )
 
       setRecords(processedRecords)
       setHasViewedCollection(true)
 
-      /** @type {LogEntry} */
-      const successLog = { message: `✅ Processed ${processedRecords.length} records successfully!`, type: 'success' }
-      addLog(successLog)
+      if (stopRequested) {
+        addLog({ message: '⏹️ Processing stopped. Saving current progress...', type: 'warning' })
+        const date = new Date().toISOString().split('T')[0]
+        const csvContent = await generateCsv(processedRecords)
+        downloadCsv(csvContent, `vinyl_collection_incomplete_${date}.csv`)
+      } else {
+        addLog({ message: `✅ Processed ${processedRecords.length} records successfully!`, type: 'success' })
+      }
 
       setTimeout(() => setPage('edit'), 1000)
 
     } catch (error) {
       console.error(error)
-
-      if (error instanceof Error && error.message === 'STOP_PROCESSING') {
-        /** @type {LogEntry} */
-        const stopLog = { message: '⏹️ Processing stopped. Saving current progress...', type: 'warning' }
-        addLog(stopLog)
-
-        /** @type {VinylRecord[]} */
-        const current = records
-
-        if (current.length > 0) {
-          const csvContent = await generateCsv(current)
-          downloadCsv(csvContent, 'partial_vinyl_collection.csv')
-          setPage('edit')
-        }
-      } else {
-        /** @type {LogEntry} */
-        const errorLog = { message: `❌ Error: ${error?.message || 'An unknown error occurred'}`, type: 'error' }
-        addLog(errorLog)
-      }
+      addLog({ message: `❌ Error: ${error?.message || 'An unknown error occurred'}`, type: 'error' })
     } finally {
       setIsProcessing(false)
-      setStopProcessing(false)
+      setStopRequested(false)
     }
   }
 
@@ -145,8 +144,10 @@ export function InputNewCollection() {
     <div className={styles.page}>
       <h1 className={styles.title}>Process New Collection</h1>
 
-      <form ref={formRef} onSubmit={handleSubmit} className={styles.form}>
+      <form ref={formRef} onSubmit={handleSubmit} className={styles.form}>          
         <CsvDropzone dropzone={discogsDropzone} file={discogsFile} fileError={fileError} />
+
+        <PreviousCsvDropzone dropzone={previousDropzone} file={previousFile} />
 
         <TokenInput
           token={discogsToken}
@@ -159,7 +160,7 @@ export function InputNewCollection() {
         {isProcessing && <ProcessingLogs progress={progress} />}
 
         <ActionButtons
-          onStop={() => setStopProcessing(true)}
+          onStop={() => setStopRequested(true)}
           onReset={resetForm}
           {...{ isProcessing }}
         />
@@ -202,6 +203,43 @@ function CsvDropzone({ dropzone, file, fileError }) {
         )}
       </div>
       {fileError && <p className={styles.errorText}>{fileError}</p>}
+    </div>
+  )
+}
+
+function PreviousCsvDropzone({ dropzone, file }) {
+  const { getRootProps, getInputProps, isDragActive } = dropzone
+
+  const statusClassName = file
+    ? styles.success
+    : isDragActive
+      ? styles.active
+      : styles.idle
+
+  return (
+    <div>
+      <div className={styles.labelRow}>
+        <label className={styles.label}>Previously Processed Discogs CSV Export (Optional)</label>
+        <Tooltip text="If you have previously processed a Discogs CSV export file, you can add it here to speed up the process significantly by reusing existing data." />
+      </div>
+
+      <div {...getRootProps()} className={cx(styles.dropzone, statusClassName)}>
+        <input {...getInputProps()} />
+        
+        {file ? (
+          <div className={styles.dropInfo}>
+            <FileUp className={styles.iconSuccess} size={24} />
+            <span className={styles.fileName}>{file.name}</span>
+          </div>
+        ) : isDragActive ? (
+          <p className={styles.dropActiveText}>Drop the file here...</p>
+        ) : (
+          <div className={styles.dropPrompt}>
+            <FileUp className={styles.iconDefault} />
+            <p className={styles.dropText}>Drag & drop a previously processed CSV file or click to browse</p>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

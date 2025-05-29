@@ -1,21 +1,51 @@
 import { v5 as uuidv5 } from 'uuid'
 
 const UUID_NAMESPACE = '3fa85f64-5717-4562-b3fc-2c963f66afa6'
-
 const MAX_RETRIES = 3
 
 function generateId(releaseId, index) {
   return uuidv5(`${releaseId}-${index}`, UUID_NAMESPACE)
 }
 
-export async function processRecords(rawData, token, onProgress, onLog) {
+export async function processRecords(rawData, previousData, token, onProgress, onLog, checkStopRequested) {
   const results = []
   let requestCount = 0
 
+  // Create a map of previous records by release_id for quick lookup
+  const previousRecordsMap = new Map()
+  previousData.forEach(record => {
+    const releaseId = record.release_id || record['Release ID']
+    if (releaseId) {
+      previousRecordsMap.set(releaseId.toString(), record)
+    }
+  })
+
   for (let i = 0; i < rawData.length; i++) {
+    if (checkStopRequested()) {
+      onLog('🛑 Stop requested. Finishing current record...')
+      break
+    }
+
     const item = rawData[i]
-    const releaseId = item.release_id || item['Release ID']
+    const releaseId = (item.release_id || item['Release ID'])?.toString()
     if (!releaseId) continue
+
+    // Check if we have this record in previous data
+    const previousRecord = previousRecordsMap.get(releaseId)
+    if (previousRecord?.Genres?.length && previousRecord['Image url']) {
+      // Use previous data if available
+      const record = {
+        ...item,
+        id: generateId(releaseId, i),
+        Genres: previousRecord.Genres,
+        'Primary Genre': previousRecord['Primary Genre'] || previousRecord.Genres[0],
+        'Image url': previousRecord['Image url']
+      }
+      results.push(record)
+      onLog(`📝 Reused data for: ${record.Artist} | ${record.Released} | [${record.Genres.join(', ')}]`)
+      onProgress(Math.round(((i + 1) / rawData.length) * 100))
+      continue
+    }
 
     if (requestCount >= 60) {
       onLog('⏳ Reached 60 requests. Waiting 60 seconds to avoid rate limiting...')
