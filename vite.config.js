@@ -2,6 +2,12 @@ import { defineConfig, transformWithEsbuild } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
+  base: './',
+  
+  build: {
+    outDir: 'dist',
+  },
+  
   plugins: [
     {
       name: 'treat-js-files-as-jsx',
